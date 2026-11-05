@@ -6,14 +6,12 @@ import android.os.Build
 import android.os.PowerManager
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.mora.systemmanager.core.CommandExecutor
 import com.mora.systemmanager.core.CommandResult
@@ -49,65 +47,6 @@ fun ControlCenterScreen(executor: CommandExecutor?) {
 
     val battery = remember { batterySnapshot(context) }
     val thermal = remember { thermalSnapshot(context) }
-ackage com.mora.systemmanager.ui
-
-import android.content.Context
-import android.os.BatteryManager
-import android.os.Build
-import android.os.PowerManager
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
-import com.mora.systemmanager.core.CommandExecutor
-import com.mora.systemmanager.core.CommandResult
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-
-private val protectedPackages = setOf(
-    "android", "com.android.systemui", "com.android.settings",
-    "com.android.phone", "com.android.server.telecom",
-    "com.android.providers.settings", "com.android.providers.media",
-    "com.android.packageinstaller", "com.google.android.packageinstaller",
-    "com.android.permissioncontroller", "com.android.shell",
-    "com.android.bluetooth", "com.android.nfc", "com.android.providers.telephony",
-    "com.android.providers.contacts", "com.android.providers.downloads",
-    "com.android.networkstack", "com.android.networkstack.tethering"
-)
-
-@Composable
-fun ControlCenterScreen(executor: CommandExecutor?) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    var output by remember { mutableStateOf("Pilih fitur untuk mulai.") }
-    var busy by remember { mutableStateOf(false) }
-    var propertyName by remember { mutableStateOf("debug.example.value") }
-    var propertyValue by remember { mutableStateOf("") }
-    var serviceName by remember { mutableStateOf("") }
-    var packageName by remember { mutableStateOf("") }
-    var showPropertyDialog by remember { mutableStateOf(false) }
-    var showServiceDialog by remember { mutableStateOf(false) }
-    var showDebloatDialog by remember { mutableStateOf(false) }
-    var showRestoreDialog by remember { mutableStateOf(false) }
-
-    val battery = remember { batterySnapshot(context) }
-    val thermal = remember { thermalSnapshot(context) }
-    val kernel = remember { buildString {
-        appendLine("Kernel: ${System.getProperty("os.version") ?: "Unknown"}")
-        appendLine("Release: ${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})")
-        appendLine("ABI: ${Build.SUPPORTED_ABIS.joinToString()}")
-        appendLine("Fingerprint: ${Build.FINGERPRINT}")
-        appendLine("SELinux (app view): ${if (Build.VERSION.SDK_INT >= 23) "query via root command" else "not available"}")
-    } }
-
     fun runCommand(vararg command: String, onResult: (CommandResult) -> Unit = {}) {
         val active = executor
         if (active == null) {
@@ -166,7 +105,7 @@ fun ControlCenterScreen(executor: CommandExecutor?) {
         item {
             ControlCard("Root Configuration Backup", "Backup konfigurasi KernelSU / module manager ke penyimpanan bersama.",
                 Icons.Default.Backup) {
-                runCommand("sh", "-c", "mkdir -p /sdcard/MoraBackup || exit 1; stamp=$(date +%Y%m%d-%H%M%S); set --; [ -d /data/adb/ksu ] && set -- \"$@\" /data/adb/ksu; [ -d /data/adb/modules ] && set -- \"$@\" /data/adb/modules; [ \"$#\" -gt 0 ] || exit 4; archive=/sdcard/MoraBackup/mora-config-$stamp.tar.gz; tar -czf \"$archive\" \"$@\" || exit 5; ls -lh \"$archive\"")
+                runCommand("sh", "-c", "mkdir -p /sdcard/MoraBackup || exit 1; stamp=$(date +%Y%m%d-%H%M%S); set --; [ -d /data/adb/ksu ] && set -- \"$@\" /data/adb/ksu; [ -d /data/adb/modules ] && set -- \"$@\" /data/adb/modules; [ \"$#\" -gt 0 ] || exit 4; archive=/sdcard/MoraBackup/mora-config-\$stamp.tar.gz; tar -czf \"\$archive\" \"$@\" || exit 5; ls -lh \"\$archive\"")
             }
         }
         item {
@@ -279,7 +218,7 @@ fun ControlCenterScreen(executor: CommandExecutor?) {
         confirmButton = {
             TextButton(onClick = {
                 showRestoreDialog = false
-                runCommand("sh", "-c", "file=$(ls -1t /sdcard/MoraBackup/mora-config-*.tar.gz 2>/dev/null | head -n 1); [ -n \"$file\" ] || exit 2; tar -tzf \"$file\" >/dev/null || exit 3; tar -xzf \"$file\" -C /")
+                runCommand("sh", "-c", "file=$(ls -1t /sdcard/MoraBackup/mora-config-*.tar.gz 2>/dev/null | head -n 1); [ -n \"\$file\" ] || exit 2; tar -tzf \"\$file\" >/dev/null || exit 3; tar -xzf \"\$file\" -C /")
             }) { Text("Restore latest backup", color = MaterialTheme.colorScheme.error) }
         },
         dismissButton = { TextButton(onClick = { showRestoreDialog = false }) { Text("Cancel") } }

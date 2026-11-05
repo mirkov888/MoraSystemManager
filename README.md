@@ -46,3 +46,9 @@ GitHub Actions is configured at `.github/workflows/android-build.yml` and builds
 - Backup archives cover `/data/adb/ksu` and `/data/adb/modules` when those paths exist. Restore overwrites those paths and can cause bootloops if modules/configuration are incompatible. Keep a recovery route available.
 - Shizuku may not have permission to execute every command; full functionality generally requires KernelSU/Magisk root.
 - This source has **not yet been compiled or tested on-device**. Build with GitHub Actions and test on a spare/test device before relying on restore or service controls.
+
+
+### Build-log fixes (November 2026)
+- Removed an accidentally duplicated package/import block in `ControlCenterScreen.kt` that caused cascading Kotlin parser errors.
+- Escaped shell variables in Kotlin command strings (`$stamp`, `$archive`, `$file`) so Kotlin does not interpret them as Kotlin identifiers.
+- Replaced the compile-time call to `Shizuku.newProcess` with a reflective compatibility bridge because Shizuku API 13.1.5 exposes that legacy method as private to Kotlin. Shizuku's own changelog recommends migrating to `UserService`; the bridge is transitional and should be replaced with a proper UserService implementation in a later maintenance update.
