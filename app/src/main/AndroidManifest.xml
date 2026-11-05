@@ -3,6 +3,7 @@
     <application
         android:allowBackup="true"
         android:label="Mora System Manager"
+        android:icon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
 
@@ -24,13 +25,13 @@
             </intent-filter>
         </activity-alias>
 
-        <!-- Default launcher icon: variant 2, purple Mora shield. -->
+        <!-- Default launcher icon: variant 2, uploaded Mora mascot artwork. -->
         <activity-alias
             android:name=".LauncherIconPurple"
             android:targetActivity=".MainActivity"
             android:enabled="true"
             android:exported="true"
-            android:icon="@drawable/ic_launcher_variant_2"
+            android:icon="@mipmap/ic_launcher"
             android:label="Mora System Manager">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -12,8 +12,8 @@ android {
         applicationId = "com.mora.systemmanager"
         minSdk = 26
         targetSdk = 35
-        versionCode = 3
-        versionName = "1.0.0-alpha03"
+        versionCode = 20
+        versionName = "2.0.0"
     }
 
     buildFeatures { compose = true }

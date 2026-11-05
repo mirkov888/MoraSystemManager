@@ -1,7 +1,7 @@
 # Mora System Manager launcher icons
 
 1. Blue Shield — layered blue shield.
-2. Purple Mora — purple shield with Mora monogram and gear. DEFAULT.
+2. Mora mascot Mora — purple shield with Mora monogram and gear. DEFAULT.
 3. Gear Shield — blue/violet gear and wrench shield.
 4. Cyan Shield — cyan glass shield and orbit accent.
 

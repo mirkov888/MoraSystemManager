@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 private enum class Page(val title: String) {
-    HOME("Overview"), APPS("Packages"), DIAG("Diagnostics"), SETTINGS("Settings")
+    HOME("Overview"), APPS("Packages"), CONTROL("Control"), DIAG("Diagnostics"), SETTINGS("Settings")
 }
 private enum class AppFilter(val title: String) {
     ALL("All"), USER("User"), SYSTEM("System"), ENABLED("Enabled"), DISABLED("Disabled")
@@ -108,7 +108,7 @@ fun MoraApp() {
                 title = {
                     Column {
                         Text("Mora System Manager", style = MaterialTheme.typography.titleLarge)
-                        Text("ROOT EDITION · v1.0.0-alpha02", style = MaterialTheme.typography.labelSmall,
+                        Text("SYSTEM CONTROL CENTER · v2.0.0", style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 },
@@ -131,6 +131,7 @@ fun MoraApp() {
                             Icon(when (item) {
                                 Page.HOME -> Icons.Default.Dashboard
                                 Page.APPS -> Icons.Default.Apps
+                                Page.CONTROL -> Icons.Default.Tune
                                 Page.DIAG -> Icons.Default.Terminal
                                 Page.SETTINGS -> Icons.Default.Settings
                             }, contentDescription = item.title)
@@ -277,6 +278,8 @@ fun MoraApp() {
                     }
                 }
             }
+
+            Page.CONTROL -> ControlCenterScreen(executor = executor)
 
             Page.DIAG -> Column(
                 Modifier.fillMaxSize().padding(padding).padding(16.dp),
@@ -430,10 +433,10 @@ private fun SettingsScreen(
     message: String?,
     onSelectIcon: (Int) -> Unit
 ) {
-    val names = listOf("Blue Shield", "Purple Mora", "Gear Shield", "Cyan Shield")
+    val names = listOf("Blue Shield", "Privacy Cat", "Gear Shield", "Cyan Shield")
     val descriptions = listOf(
         "Blue layered shield",
-        "Purple Mora shield — default",
+        "Privacy Cat mascot — default",
         "Blue-violet gear and wrench",
         "Cyan glass shield"
     )
@@ -451,7 +454,7 @@ private fun SettingsScreen(
         item {
             Text("Settings", style = MaterialTheme.typography.headlineSmall)
             Text("Launcher appearance", style = MaterialTheme.typography.titleMedium)
-            Text("Choose one of four launcher icons. Purple Mora is the default.",
+            Text("Privacy Cat is the default launcher icon. Adaptive icons work on Android 8+ and themed monochrome icons on Android 13+ launchers.",
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         items((1..4).toList()) { number ->
@@ -494,11 +497,11 @@ private fun SettingsScreen(
         item {
             HorizontalDivider()
             Text("Future update suggestions", style = MaterialTheme.typography.titleMedium)
-            SuggestionItem("Privacy cat icon", "Add the original Mora Privacy cat mascot as a fifth option when its artwork is supplied.")
-            SuggestionItem("Adaptive & themed icons", "Add Android monochrome themed icons and proper adaptive foreground/background layers.")
+            SuggestionItem("Privacy Cat launcher icon", "Current default launcher artwork.")
+            SuggestionItem("Adaptive & themed icons", "Adaptive foreground/background and monochrome themed icon resources are included.")
             SuggestionItem("Appearance presets", "Accent color, compact layout, and light/dark theme controls.")
-            SuggestionItem("System health center", "Thermal history, battery health, storage analysis, and kernel information.")
-            SuggestionItem("Safe debloat profiles", "Reviewable presets with restore points and protected package lists.")
+            SuggestionItem("Battery & thermal monitor", "Battery percentage and Android thermal status snapshot.")
+            SuggestionItem("Advanced Debloater & Kernel Manager", "Protected-package checks, kernel diagnostics, and guarded configuration controls.")
         }
     }
 }

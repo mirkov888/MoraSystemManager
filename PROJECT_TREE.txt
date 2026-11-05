@@ -1,18 +1,12 @@
-PROJECT_TREE.txt
-README.md
-app/build.gradle.kts
-app/src/main/AndroidManifest.xml
-app/src/main/java/com/mora/systemmanager/MainActivity.kt
-app/src/main/java/com/mora/systemmanager/core/AccessManager.kt
-app/src/main/java/com/mora/systemmanager/core/CommandExecutor.kt
-app/src/main/java/com/mora/systemmanager/core/CommandResult.kt
-app/src/main/java/com/mora/systemmanager/core/RootExecutor.kt
-app/src/main/java/com/mora/systemmanager/core/ShizukuExecutor.kt
-app/src/main/java/com/mora/systemmanager/data/DeviceInfo.kt
-app/src/main/java/com/mora/systemmanager/data/PackageRepository.kt
-app/src/main/java/com/mora/systemmanager/data/SystemRepository.kt
-app/src/main/java/com/mora/systemmanager/ui/MoraApp.kt
-app/src/main/java/com/mora/systemmanager/ui/theme/Theme.kt
-build.gradle.kts
-gradle.properties
-settings.gradle.kts
+Mora System Manager v2.0.0
+- Overview / Package Manager
+- System Control Center:
+  - Battery & Thermal snapshot
+  - Runtime property editor (resetprop + getprop backup)
+  - Service inspection/start/stop with core-service denylist
+  - Advanced Debloater (third-party packages only, protected package checks)
+  - Kernel & SELinux diagnostics
+  - KernelSU/modules configuration backup and restore
+- Diagnostics
+- Settings / launcher icon variants
+- Adaptive launcher icon + monochrome themed icon layer
