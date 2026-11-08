@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.mora.systemmanager.connector.MoraPolicyBridge
 import com.mora.systemmanager.core.AccessManager
 import com.mora.systemmanager.core.CommandExecutor
 import com.mora.systemmanager.data.AppEntry
@@ -37,7 +38,7 @@ private enum class AppFilter(val title: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MoraApp() {
+fun MoraApp(bridge: MoraPolicyBridge) {
     val context = LocalContext.current
     val accessManager = remember { AccessManager() }
     val systemRepo = remember { SystemRepository(context) }
@@ -62,6 +63,9 @@ fun MoraApp() {
 
     val snapshot = remember(refresh) { systemRepo.snapshot() }
     val device = remember { DeviceInfo() }
+    val centralPolicy = bridge.policy.value
+    val connectorState = bridge.connection.value
+    val activeExecutor = remember(executor, bridge) { executor?.let { bridge.guarded(it) } }
 
     suspend fun refreshAccess() {
         executor = withContext(Dispatchers.IO) { accessManager.preferredExecutor() }
@@ -184,6 +188,21 @@ fun MoraApp() {
                 }
                 item {
                     ElevatedCard(Modifier.fillMaxWidth()) {
+                        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                            Text("Mora Shield · Central Policy", style = MaterialTheme.typography.titleMedium)
+                            Text(connectorState, style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.primary)
+                            Text("Master: ${if (centralPolicy.enabled) "Aktif" else "Nonaktif"} · Monitoring: ${if (centralPolicy.monitoringEnabled) "Aktif" else "Nonaktif"}")
+                            Text("Network: ${centralPolicy.networkMode} · Background: ${centralPolicy.backgroundMode}")
+                            Text(if (centralPolicy.updatedAtMs > 0L) "Cache diperbarui: ${java.text.DateFormat.getDateTimeInstance().format(java.util.Date(centralPolicy.updatedAtMs))}" else "Belum menerima kebijakan dari Shield; menggunakan cache lokal.")
+                            if (!centralPolicy.enabled) {
+                                Text("Aksi Root/Shizuku diblokir oleh master policy.", color = MaterialTheme.colorScheme.error)
+                            }
+                        }
+                    }
+                }
+                item {
+                    ElevatedCard(Modifier.fillMaxWidth()) {
                         Column(Modifier.padding(16.dp)) {
                             Text("Installed applications", style = MaterialTheme.typography.titleMedium)
                             Text("${apps.size} packages detected")
@@ -279,7 +298,7 @@ fun MoraApp() {
                 }
             }
 
-            Page.CONTROL -> ControlCenterScreen(executor = executor)
+            Page.CONTROL -> ControlCenterScreen(executor = activeExecutor)
 
             Page.DIAG -> Column(
                 Modifier.fillMaxSize().padding(padding).padding(16.dp),
@@ -289,14 +308,14 @@ fun MoraApp() {
                 Text("Collect basic device and privilege information.")
                 Button(onClick = {
                     scope.launch {
-                        val active = executor
+                        val active = activeExecutor
                         diagnostic = if (active == null) "No Root/Shizuku access." else {
                             val id = active.execute(listOf("id"))
                             val kernel = active.execute(listOf("uname", "-a"))
                             "Access: ${active.label}\n${id.stdout.trim()}\n\nKernel:\n${kernel.stdout.trim()}\n\n${kernel.stderr}"
                         }
                     }
-                }, enabled = executor != null) { Text("Run diagnostics") }
+                }, enabled = activeExecutor != null) { Text("Run diagnostics") }
                 ElevatedCard(Modifier.fillMaxWidth()) {
                     Text(diagnostic, Modifier.padding(16.dp), style = MaterialTheme.typography.bodyMedium)
                 }
